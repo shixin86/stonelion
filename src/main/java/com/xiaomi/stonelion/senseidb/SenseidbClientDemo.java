@@ -34,7 +34,7 @@ public class SenseidbClientDemo {
     }
 
     private static SenseiClientRequest getSenseiClientRequest() {
-        return SenseiClientRequest.builder().paging(10, 0).query(Queries.stringQuery(getMultiLuceneQueryLanguage("45852297")))
+        return SenseiClientRequest.builder().paging(10, 0).query(Queries.stringQuery(getMultiLuceneQueryLanguage("177332820")))
                 .fetchStored(true).explain(true).addSort(Sort.desc("activeness")).addSort(Sort.byRelevance()).build();
     }
 

@@ -26,8 +26,8 @@ import java.util.Map.Entry;
  * @Description TODO
  */
 public class GeoSearchViaSenseidb {
-    private static final String SENSEI_SERVER_HOST = "10.101.10.40";
-    private static final int SENSEI_SERVER_PORT = 8080;
+    private static final String SENSEI_SERVER_HOST = "10.237.12.2";
+    private static final int SENSEI_SERVER_PORT = 8088;
 
     public static void main(String[] args) {
         SenseiServiceProxy proxy = new SenseiServiceProxy(SENSEI_SERVER_HOST, SENSEI_SERVER_PORT);
@@ -37,11 +37,13 @@ public class GeoSearchViaSenseidb {
         int count = 300;
         // double lat = 39.959661;
         // double lng = 116.31614;
-        double lat = 40.0294;
-        double lng = 116.329975;
+        // double lat = 40.0294;
+        // double lng = 116.329975;
+        double lat = 80.71818333779606;
+        double lng = 96.240234375;
 
-        double distance = 100;
-        String sex = "F";
+        double distance = 10;
+        String sex = "";
         long timespan = 7 * 24 * 60 * 60 * 1000l;
         SenseiClientRequest request = buildRequest(offset, count, lat, lng, distance, sex, timespan);
 
@@ -55,19 +57,19 @@ public class GeoSearchViaSenseidb {
         System.out.println(String.format("time : %d", result.getTime()));
 
         List<SenseiHit> hits = result.getHits();
-//        if (null != hits) {
-//            System.out.println("1******************************");
-//            for (SenseiHit hit : hits) {
-//                Map<String, List<String>> map = hit.getFieldValues();
-//                for (Entry<String, List<String>> entry : map.entrySet()) {
-//                    System.out.print("field name is: " + entry.getKey() + ", and field values is:");
-//                    for (String fieldValue : entry.getValue()) {
-//                        System.out.print(fieldValue + ", ");
-//                    }
-//                    System.out.println();
-//                }
-//            }
-//        }
+        // if (null != hits) {
+        // System.out.println("1******************************");
+        // for (SenseiHit hit : hits) {
+        // Map<String, List<String>> map = hit.getFieldValues();
+        // for (Entry<String, List<String>> entry : map.entrySet()) {
+        // System.out.print("field name is: " + entry.getKey() + ", and field values is:");
+        // for (String fieldValue : entry.getValue()) {
+        // System.out.print(fieldValue + ", ");
+        // }
+        // System.out.println();
+        // }
+        // }
+        // }
 
         if (null != hits) {
             System.out.println("2******************************");
