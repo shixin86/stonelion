@@ -32,6 +32,19 @@ public class DBCPDemo {
         return basicDataSource;
     }
 
+    public static DataSource getBasicDataSource(String host, String db, String username, String password) {
+        BasicDataSource basicDataSource = new BasicDataSource();
+        basicDataSource.setDriverClassName("com.mysql.jdbc.Driver");
+        basicDataSource.setUrl("jdbc:mysql://" + host + ":3306/" + db);
+        basicDataSource.setUsername(username);
+        basicDataSource.setPassword(password);
+        basicDataSource.setMaxActive(100);
+        basicDataSource.setMaxIdle(20);
+        basicDataSource.setValidationQuery("/* ping */ select 1");
+        basicDataSource.setTestOnBorrow(true);
+        return basicDataSource;
+    }
+
     /**
      * Create pooling datasource.
      * Use it can add more custom features.
