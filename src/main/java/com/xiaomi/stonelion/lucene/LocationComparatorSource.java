@@ -2,12 +2,11 @@
 package com.xiaomi.stonelion.lucene;
 
 
+import com.xiaomi.stonelion.lucene.old.Util;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.search.FieldCache;
 import org.apache.lucene.search.FieldComparator;
 import org.apache.lucene.search.FieldComparatorSource;
-
-import xiaomi.com.stonelion.lucene.Util.AllInOneUserDocKey;
 
 import java.io.IOException;
 
@@ -41,8 +40,8 @@ public class LocationComparatorSource extends FieldComparatorSource {
 
         @Override
         public void setNextReader(IndexReader indexReader, int docBase) throws IOException {
-            latitudes = FieldCache.DEFAULT.getDoubles(indexReader, AllInOneUserDocKey.LATITUDE);
-            longitudes = FieldCache.DEFAULT.getDoubles(indexReader, AllInOneUserDocKey.LONGITUDE);
+            latitudes = FieldCache.DEFAULT.getDoubles(indexReader, Util.AllInOneUserDocKey.LATITUDE);
+            longitudes = FieldCache.DEFAULT.getDoubles(indexReader, Util.AllInOneUserDocKey.LONGITUDE);
         }
 
         @Override

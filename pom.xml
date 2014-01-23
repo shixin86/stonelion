@@ -137,8 +137,8 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <addClasspath>false</addClasspath>
-                            <mainClass>com.xiaomi.stonelion.miliao.NearbyPOIWorker</mainClass>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>com.xiaomi.stonelion.miliao.HelloWorld</mainClass>
                             <classpathPrefix>lib/</classpathPrefix>
                         </manifest>
                         <manifestEntries>
@@ -168,6 +168,7 @@
                         </goals>
                         <configuration>
                             <outputDirectory>target/lib</outputDirectory>
+                            <outputDirectory>target/classes/lib</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
@@ -186,11 +187,11 @@
                         </goals>
                         <configuration>
                             <overwrite>true</overwrite>
-                            <outputDirectory>${project.basedir}/release/conf</outputDirectory>
+                            <outputDirectory>${project.basedir}/target/classes/</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>${project.basedir}/conf</directory>
-                                    <filtering>true</filtering>
+                                    <directory>${project.basedir}/file/</directory>
+                                    <filtering>false</filtering>
                                 </resource>
                             </resources>
                         </configuration>
