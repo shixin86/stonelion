@@ -1,4 +1,4 @@
-package xiaomi.com.stonelion.lucene;
+package com.xiaomi.stonelion.lucene.old;
 
 public class User {
     public int id;

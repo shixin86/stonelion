@@ -1,9 +1,8 @@
 
-package xiaomi.com.stonelion.lucene;
+package com.xiaomi.stonelion.lucene.old;
 
 import com.xiaomi.stonelion.lucene.LocationBasedUtil;
 import com.xiaomi.stonelion.lucene.LocationComparatorSource;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.analysis.SimpleAnalyzer;
 import org.apache.lucene.document.Document;
@@ -12,17 +11,7 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriter.MaxFieldLength;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause.Occur;
-import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.Filter;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.NumericRangeQuery;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.QueryWrapperFilter;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.Sort;
-import org.apache.lucene.search.SortField;
-import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.TopFieldDocs;
+import org.apache.lucene.search.*;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.LockObtainFailedException;
 
@@ -60,7 +49,7 @@ public class TestSearchNearbyUsers {
     /**
      * 用基站查询
      * 
-     * @throws IOException
+     * @throws java.io.IOException
      */
     private static void testSearchByTowers() throws IOException {
         IndexWriter towersIndexWriter = new IndexWriter(FSDirectory.open(new File(TOWERS_INDEX_PATH)), new SimpleAnalyzer(), false,
@@ -98,10 +87,10 @@ public class TestSearchNearbyUsers {
 
     /**
      * 用经纬度查询
-     * 
-     * @throws CorruptIndexException
-     * @throws LockObtainFailedException
-     * @throws IOException
+     *
+     * @throws org.apache.lucene.index.CorruptIndexException
+     * @throws org.apache.lucene.store.LockObtainFailedException
+     * @throws java.io.IOException
      */
     private static void testSearchByLatlon() throws CorruptIndexException, LockObtainFailedException, IOException {
         IndexWriter latlonIndexWriter = new IndexWriter(FSDirectory.open(new File(LATLON_STAGING_INDEX_PATH)), new SimpleAnalyzer(), false,

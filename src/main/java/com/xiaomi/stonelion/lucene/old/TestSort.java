@@ -1,12 +1,12 @@
 
-package xiaomi.com.stonelion.lucene;
+package com.xiaomi.stonelion.lucene.old;
 
 import org.apache.lucene.analysis.WhitespaceAnalyzer;
 import org.apache.lucene.index.CorruptIndexException;
+import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
-import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.LockObtainFailedException;
 
@@ -31,58 +31,58 @@ public class TestSort {
     
     /**
      * 按照评分进行排序，但是性能不高，最好使用默认方法
-     * @throws CorruptIndexException
-     * @throws LockObtainFailedException
-     * @throws IOException
+     * @throws org.apache.lucene.index.CorruptIndexException
+     * @throws org.apache.lucene.store.LockObtainFailedException
+     * @throws java.io.IOException
      */
     private static void _test_sort_relevance() throws CorruptIndexException, LockObtainFailedException, IOException {
         _test_sort(Sort.RELEVANCE);
     }
-    
-    
+
+
     /**
      * 按索引顺序排序
-     * @throws CorruptIndexException
-     * @throws LockObtainFailedException
-     * @throws IOException
+     * @throws org.apache.lucene.index.CorruptIndexException
+     * @throws org.apache.lucene.store.LockObtainFailedException
+     * @throws java.io.IOException
      */
     private static void _test_sort_indexorder() throws CorruptIndexException, LockObtainFailedException, IOException{
         _test_sort(Sort.INDEXORDER);
     }
 
-    
+
     /**
      * 根据某个列进行排序
      * 应该是 Index.NOT_ANALYZED; Index.NOT_ANALYZED_NO_NORMS; 但是不用好像也可以
-     * @throws CorruptIndexException
-     * @throws LockObtainFailedException
-     * @throws IOException
+     * @throws org.apache.lucene.index.CorruptIndexException
+     * @throws org.apache.lucene.store.LockObtainFailedException
+     * @throws java.io.IOException
      */
     private static void _test_sort_field() throws CorruptIndexException, LockObtainFailedException, IOException{
         Sort sort = new Sort(new SortField(User.KEY_NAME, SortField.STRING));
         _test_sort(sort);
     }
-    
-    
+
+
     /**
      * 根据某个列进行排序，倒序排
-     * @throws CorruptIndexException
-     * @throws LockObtainFailedException
-     * @throws IOException
+     * @throws org.apache.lucene.index.CorruptIndexException
+     * @throws org.apache.lucene.store.LockObtainFailedException
+     * @throws java.io.IOException
      */
     private static void _test_sort_field_reverse() throws CorruptIndexException, LockObtainFailedException, IOException{
         Sort sort = new Sort(new SortField(User.KEY_BIRTHDAY, SortField.LONG, true));
         _test_sort(sort);
     }
-    
-    
+
+
     /**
      * 通过多个域进行排序
-     * 
+     *
      * 先按评分排，再按生日排
-     * @throws CorruptIndexException
-     * @throws LockObtainFailedException
-     * @throws IOException
+     * @throws org.apache.lucene.index.CorruptIndexException
+     * @throws org.apache.lucene.store.LockObtainFailedException
+     * @throws java.io.IOException
      */
     private static void _test_sort_mutiple_field() throws CorruptIndexException, LockObtainFailedException, IOException{
         SortField[] sortFields = new SortField[]{
@@ -91,7 +91,7 @@ public class TestSort {
         Sort sort = new Sort(sortFields);
         _test_sort(sort);
     }
-    
+
     private static void _test_sort(Sort sort) throws CorruptIndexException, LockObtainFailedException, IOException{
         Directory directory = LuceneUtil.genRAMDirectory(new WhitespaceAnalyzer(), genUsers());
 
@@ -102,7 +102,7 @@ public class TestSort {
 
         LuceneUtil.displayResult(directory, booleanQuery, sort);
     }
-    
+
     private static List<User> genUsers() {
         List<User> users = new ArrayList<User>();
         users.add(new User(1, "jame", System.currentTimeMillis() - day(1)));

@@ -1,5 +1,5 @@
 
-package xiaomi.com.stonelion.lucene;
+package com.xiaomi.stonelion.lucene.old;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.SimpleAnalyzer;
@@ -10,14 +10,9 @@ import org.apache.lucene.document.Field.Store;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.Term;
 import org.apache.lucene.index.IndexWriter.MaxFieldLength;
-import org.apache.lucene.search.Explanation;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.search.*;
 import org.apache.lucene.store.LockObtainFailedException;
 import org.apache.lucene.store.RAMDirectory;
 
@@ -56,9 +51,9 @@ public class NearRealTimeSearch {
       0.5 = fieldNorm(field=city, doc=1)*/
     /**
      * 
-     * @throws CorruptIndexException
-     * @throws LockObtainFailedException
-     * @throws IOException
+     * @throws org.apache.lucene.index.CorruptIndexException
+     * @throws org.apache.lucene.store.LockObtainFailedException
+     * @throws java.io.IOException
      */
     private static void simpleNearRealTimeSearch2_updateIndex() throws CorruptIndexException, LockObtainFailedException, IOException {
         Analyzer analyzer = new SimpleAnalyzer();
@@ -83,7 +78,7 @@ public class NearRealTimeSearch {
         Query query = new TermQuery(new Term(KEY_CITY, "bj"));
         TopDocs topDocs = indexSearcher.search(query, 10);
         printResults(indexSearcher, query, topDocs);
-        
+
         indexWriter.commit();
         indexWriter.optimize();
         IndexReader newIndexReader = indexReader.reopen();
@@ -112,10 +107,10 @@ public class NearRealTimeSearch {
 
     /**
      * 增加和删除document，在近实时搜索的时候
-     * 
-     * @throws CorruptIndexException
-     * @throws LockObtainFailedException
-     * @throws IOException
+     *
+     * @throws org.apache.lucene.index.CorruptIndexException
+     * @throws org.apache.lucene.store.LockObtainFailedException
+     * @throws java.io.IOException
      */
     private static void simpleNearRealTimeSearch() throws CorruptIndexException, LockObtainFailedException, IOException {
         Analyzer analyzer = new SimpleAnalyzer();

@@ -1,17 +1,10 @@
 
-package xiaomi.com.stonelion.lucene;
+package com.xiaomi.stonelion.lucene.old;
 
 import com.chenlb.mmseg4j.analysis.ComplexAnalyzer;
 import com.chenlb.mmseg4j.analysis.MMSegAnalyzer;
 import com.chenlb.mmseg4j.analysis.MaxWordAnalyzer;
-
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.KeywordAnalyzer;
-import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
-import org.apache.lucene.analysis.SimpleAnalyzer;
-import org.apache.lucene.analysis.StopAnalyzer;
-import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.analysis.WhitespaceAnalyzer;
+import org.apache.lucene.analysis.*;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.tokenattributes.TermAttribute;
 import org.apache.lucene.document.Document;
@@ -72,7 +65,7 @@ public class TestAnalyzer {
     /**
      * 查看各种analyzer是如何分词的
      * 
-     * @throws IOException
+     * @throws java.io.IOException
      */
     private static void testKindsOfAnalyzer() throws IOException {
         String text = "北大";

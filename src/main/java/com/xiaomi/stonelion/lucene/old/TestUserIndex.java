@@ -1,8 +1,7 @@
 
-package xiaomi.com.stonelion.lucene;
+package com.xiaomi.stonelion.lucene.old;
 
 import com.chenlb.mmseg4j.analysis.MaxWordAnalyzer;
-
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.SimpleAnalyzer;
 import org.apache.lucene.document.Document;
@@ -16,16 +15,8 @@ import org.apache.lucene.index.IndexWriter.MaxFieldLength;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanClause.Occur;
-import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.Explanation;
-import org.apache.lucene.search.FieldCache;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.search.*;
 import org.apache.lucene.search.function.CustomScoreProvider;
 import org.apache.lucene.search.function.CustomScoreQuery;
 import org.apache.lucene.store.Directory;
@@ -33,9 +24,6 @@ import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.LockObtainFailedException;
 import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.util.Version;
-
-import xiaomi.com.stonelion.lucene.Util.AllInOneUserDocKey;
-import xiaomi.com.stonelion.lucene.Util.UserBoost;
 
 import java.io.File;
 import java.io.IOException;
@@ -90,24 +78,24 @@ public class TestUserIndex {
         BooleanQuery booleanQuery = new BooleanQuery();
         String escapedquery = QueryParser.escape(query);
 
-        Query userIdQuery = new TermQuery(new Term(AllInOneUserDocKey.USERID, query));
-        userIdQuery.setBoost(UserBoost.FIELD_USERID_BOOST);
-        booleanQuery.add(userIdQuery, BooleanClause.Occur.SHOULD);
+        Query userIdQuery = new TermQuery(new Term(Util.AllInOneUserDocKey.USERID, query));
+        userIdQuery.setBoost(Util.UserBoost.FIELD_USERID_BOOST);
+        booleanQuery.add(userIdQuery, Occur.SHOULD);
 
-        Query nicknameQuery = getParsedQuery(AllInOneUserDocKey.NICKNAME, analyzer, escapedquery);
-        nicknameQuery.setBoost(UserBoost.FIELD_NICKNAME_BOOST);
+        Query nicknameQuery = getParsedQuery(Util.AllInOneUserDocKey.NICKNAME, analyzer, escapedquery);
+        nicknameQuery.setBoost(Util.UserBoost.FIELD_NICKNAME_BOOST);
         booleanQuery.add(nicknameQuery, Occur.SHOULD);
 
-        Query schoolsQuery = getParsedQuery(AllInOneUserDocKey.SCHOOL, analyzer, escapedquery);
-        schoolsQuery.setBoost(UserBoost.FIELD_SCHOOLS_BOOST);
+        Query schoolsQuery = getParsedQuery(Util.AllInOneUserDocKey.SCHOOL, analyzer, escapedquery);
+        schoolsQuery.setBoost(Util.UserBoost.FIELD_SCHOOLS_BOOST);
         booleanQuery.add(schoolsQuery, Occur.SHOULD);
 
-        Query corporationsQuery = getParsedQuery(AllInOneUserDocKey.CORPRATION, analyzer, escapedquery);
-        corporationsQuery.setBoost(UserBoost.FIELD_CORPORATIONS_BOOST);
+        Query corporationsQuery = getParsedQuery(Util.AllInOneUserDocKey.CORPRATION, analyzer, escapedquery);
+        corporationsQuery.setBoost(Util.UserBoost.FIELD_CORPORATIONS_BOOST);
         booleanQuery.add(corporationsQuery, Occur.SHOULD);
 
-        Query cityQuery = getParsedQuery(AllInOneUserDocKey.CITY, analyzer, escapedquery);
-        cityQuery.setBoost(UserBoost.FIELD_CITY_BOOST);
+        Query cityQuery = getParsedQuery(Util.AllInOneUserDocKey.CITY, analyzer, escapedquery);
+        cityQuery.setBoost(Util.UserBoost.FIELD_CITY_BOOST);
         booleanQuery.add(cityQuery, Occur.SHOULD);
 
         return booleanQuery;

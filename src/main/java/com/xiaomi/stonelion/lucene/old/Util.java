@@ -1,5 +1,5 @@
 
-package xiaomi.com.stonelion.lucene;
+package com.xiaomi.stonelion.lucene.old;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -8,7 +8,7 @@ import org.apache.commons.lang.StringUtils;
  * @date 2012-7-2
  */
 public class Util {
-    protected static interface UserBoost {
+    public static interface UserBoost {
         float FIELD_USERID_BOOST = 2.0f;
         float FIELD_NICKNAME_BOOST = 1.8f;
         float FIELD_CORPORATIONS_BOOST = 1.5f;

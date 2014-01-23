@@ -1,7 +1,5 @@
 
-package xiaomi.com.stonelion.lucene;
-
-import org.apache.lucene.search.Filter;
+package com.xiaomi.stonelion.lucene.old;
 
 public class TestFilter {
     public static void main(String[] args) {

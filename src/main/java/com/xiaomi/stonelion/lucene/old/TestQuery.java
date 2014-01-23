@@ -1,4 +1,4 @@
-package xiaomi.com.stonelion.lucene;
+package com.xiaomi.stonelion.lucene.old;
 
 import org.apache.lucene.analysis.WhitespaceAnalyzer;
 import org.apache.lucene.search.Query;
@@ -26,7 +26,7 @@ public class TestQuery {
         Query query = LuceneUtil.getTermQuery(User.KEY_NAME, "ja");
         LuceneUtil.displayResult(directory, query, null);
     }
-    
+
     /**
      * 数字的range query
      * @throws Exception
@@ -36,7 +36,7 @@ public class TestQuery {
         Query query = LuceneUtil.getLongNumericRangeQuery(User.KEY_BIRTHDAY, 21, 23);
         LuceneUtil.displayResult(directory, query, null);
     }
-    
+
     /**
      * 前缀查询
      * @throws Exception
@@ -46,7 +46,7 @@ public class TestQuery {
         Query query = LuceneUtil.getPrefixQuery(User.KEY_NAME, "ja");
         LuceneUtil.displayResult(directory, query, null);
     }
-    
+
     /**
      * 短语查询
      * @throws Exception
@@ -56,7 +56,7 @@ public class TestQuery {
         Query query = LuceneUtil.getPhraseQuery(User.KEY_NAME, new String[]{"lebron", "james"}, 2);
         LuceneUtil.displayResult(directory, query, null);
     }
-    
+
     /**
      * ? 0或1
      * * 0或多
@@ -67,7 +67,7 @@ public class TestQuery {
         Query query = LuceneUtil.getWildcardQuery(User.KEY_NAME, "?ja*");
         LuceneUtil.displayResult(directory, query, null);
     }
-    
+
     /**
      * 相似的项
      * @throws Exception
@@ -77,7 +77,7 @@ public class TestQuery {
         Query query = LuceneUtil.getFuzzyQuery(User.KEY_NAME, "jome");
         LuceneUtil.displayResult(directory, query, null);
     }
-    
+
     private static List<User> genUsers() {
         List<User> users = new ArrayList<User>();
         users.add(new User(1, "jame", 21));
