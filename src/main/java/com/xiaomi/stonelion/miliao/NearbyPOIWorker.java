@@ -103,19 +103,26 @@ public class NearbyPOIWorker {
                 Label latlonLable = new Label(1, row, bean.getLongitude() + "," + bean.getLatitude());
                 writableSheet.addCell(latlonLable);
 
-                Label headPOINameLabel = new Label(2, row, result.get(0).name);
+                String chinaCityName = ChinaCitySearcher.getInstance().getCity(bean.getLongitude(), bean.getLatitude());
+                if(null == chinaCityName){
+                    chinaCityName = "未知";
+                }
+                Label cityNameLable = new Label(2, row, chinaCityName);
+                writableSheet.addCell(cityNameLable);
+
+                Label headPOINameLabel = new Label(3, row, result.get(0).name);
                 writableSheet.addCell(headPOINameLabel);
 
-                Label headPOIIdLabel = new Label(3, row, result.get(0).id);
+                Label headPOIIdLabel = new Label(4, row, result.get(0).id);
                 writableSheet.addCell(headPOIIdLabel);
 
                 row++;
 
                 for (int i = 1; i < result.size() && i < 10; i++) {
-                    Label tailPOINameLabel = new Label(2, row, result.get(i).name);
+                    Label tailPOINameLabel = new Label(3, row, result.get(i).name);
                     writableSheet.addCell(tailPOINameLabel);
 
-                    Label tailPOIIdLabel = new Label(3, row, result.get(i).id);
+                    Label tailPOIIdLabel = new Label(4, row, result.get(i).id);
                     writableSheet.addCell(tailPOIIdLabel);
 
                     row++;
