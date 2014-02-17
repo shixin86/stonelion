@@ -1,5 +1,7 @@
 package com.xiaomi.stonelion.miliao;
 
+import com.xiaomi.miliao.dal.*;
+import com.xiaomi.miliao.zookeeper.*;
 import com.xiaomi.stonelion.dbutils.DBCPDemo;
 import jxl.Workbook;
 import jxl.write.Label;
@@ -9,6 +11,7 @@ import jxl.write.WriteException;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -23,6 +26,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.*;
 
@@ -36,8 +40,8 @@ import java.util.concurrent.*;
 public class NearbyPOIWorker {
     private static final Logger logger = Logger.getLogger(NearbyPOIWorker.class);
 
-    private static final String INPUT_FILE = "/opt/soft/stonelion/group_users.txt";
-    private static final String OUTPUT_FILE = "/opt/soft/stonelion/group_users_result.xls";
+    private static final String INPUT_FILE = "group_users_2.txt";
+    private static final String OUTPUT_FILE = "group_users_result.xls";
 
     private static final String BAIDU_GET_POIS_URL = "http://api.map.baidu.com/place/v2/search";
     private static final String BAIDU_GET_POIS_SECURE_KEY = "E5842c82f03cc3594a8d0031a59a7903";
@@ -51,13 +55,35 @@ public class NearbyPOIWorker {
     private static final String DB_USERNAME = "readonly";
     private static final String DB_PASSWORD = "readonly";
 
-    private static final String queryStr = "select latitude,longitude from lbs_history where user_id=? and app_id=1";
+    private static final String QUERY_LOCATION_STR = "select latitude,longitude from lbs_history where user_id=? and app_id=1";
 
     private static final DataSource dataSource = DBCPDemo.getBasicDataSource(DB_HOST, db, DB_USERNAME, DB_PASSWORD);
     private static final ExecutorService executorService = Executors.newFixedThreadPool(10);
 
+    private static final String DB_PRATITION_CONF_PATH = "/databases/partitions";
+    private static final String DB_PARTITION_CONF_NAME = "senseidb_partition";
+    private static final int MY_CON_NUM = 10;
+
+    private static void initDBConnection() {
+        ZKSettings zkSettings = ZKFacade.getZKSettings();
+        zkSettings.setEnviromentType(EnvironmentType.PRODUCTION);
+
+        ZKClient client = ZKFacade.getClient(DB_PRATITION_CONF_PATH);
+        String data = client.getData(String.class, DB_PARTITION_CONF_NAME);
+        DbAccessor.createInstance(IOUtils.toInputStream(data), MY_CON_NUM, true);
+
+        client.registerDataChanges(String.class, DB_PARTITION_CONF_NAME, new ZKDataChangeListener<String>() {
+            @Override
+            public void onChanged(String path, String data) {
+                DbAccessor.createInstance(IOUtils.toInputStream(data), MY_CON_NUM, true);
+            }
+        });
+    }
+
     public static void main(String[] args) throws IOException, WriteException {
         logger.info("Starting NearbyPOIWorker...");
+
+        initDBConnection();
 
         File inputFile = new File(INPUT_FILE);
         if (!inputFile.exists()) {
@@ -104,25 +130,40 @@ public class NearbyPOIWorker {
                 writableSheet.addCell(latlonLable);
 
                 String chinaCityName = ChinaCitySearcher.getInstance().getCity(bean.getLongitude(), bean.getLatitude());
-                if(null == chinaCityName){
+                if (null == chinaCityName) {
                     chinaCityName = "未知";
                 }
                 Label cityNameLable = new Label(2, row, chinaCityName);
                 writableSheet.addCell(cityNameLable);
 
-                Label headPOINameLabel = new Label(3, row, result.get(0).name);
+                long lastActivityTime = -1;
+                try {
+                    lastActivityTime = queryUserLastActivityTime(userId);
+                } catch (SQLException e) {
+                    logger.error(e);
+                }
+                if (lastActivityTime != -1 && lastActivityTime != 0) {
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTimeInMillis(lastActivityTime);
+
+                    String content = calendar.get(Calendar.YEAR) + " " + (calendar.get(Calendar.MONTH) + 1) + " " + calendar.get(Calendar.DAY_OF_MONTH);
+                    Label lastActivityTimeLabel = new Label(3, row, content);
+                    writableSheet.addCell(lastActivityTimeLabel);
+                }
+
+                Label headPOINameLabel = new Label(4, row, result.get(0).name);
                 writableSheet.addCell(headPOINameLabel);
 
-                Label headPOIIdLabel = new Label(4, row, result.get(0).id);
+                Label headPOIIdLabel = new Label(5, row, result.get(0).id);
                 writableSheet.addCell(headPOIIdLabel);
 
                 row++;
 
                 for (int i = 1; i < result.size() && i < 10; i++) {
-                    Label tailPOINameLabel = new Label(3, row, result.get(i).name);
+                    Label tailPOINameLabel = new Label(4, row, result.get(i).name);
                     writableSheet.addCell(tailPOINameLabel);
 
-                    Label tailPOIIdLabel = new Label(4, row, result.get(i).id);
+                    Label tailPOIIdLabel = new Label(5, row, result.get(i).id);
                     writableSheet.addCell(tailPOIIdLabel);
 
                     row++;
@@ -156,12 +197,11 @@ public class NearbyPOIWorker {
         return new HttpBaiduPOIsWorker(latitude, longitude, radius, page, count, keywords);
     }
 
-
     private static LbsHistoryBean getLatlonFromDB(long userId) {
         QueryRunner queryRunner = new QueryRunner(dataSource);
         BeanListHandler<LbsHistoryBean> beanBeanListHandler = new BeanListHandler<LbsHistoryBean>(LbsHistoryBean.class);
         try {
-            List<LbsHistoryBean> result = queryRunner.query(queryStr, beanBeanListHandler, userId);
+            List<LbsHistoryBean> result = queryRunner.query(QUERY_LOCATION_STR, beanBeanListHandler, userId);
             if (CollectionUtils.isEmpty(result)) {
                 logger.error("There was no record in db!");
                 return null;
@@ -175,6 +215,17 @@ public class NearbyPOIWorker {
             logger.error("Failed to retrive data from db.", e);
         }
         return null;
+    }
+
+    @DAO
+    public static interface UserActivinessDAO {
+        @SQL("select last_activity_time from user_activiness where user_id=:userId")
+        @SQLControl(useSlave = true)
+        long queryLastActivityTime(@SQLParam("userId") long userId) throws SQLException;
+    }
+
+    private static long queryUserLastActivityTime(long userId) throws SQLException {
+        return DAOFacade.getDAO(UserActivinessDAO.class).queryLastActivityTime(userId);
     }
 
     public static class LbsHistoryBean {
@@ -197,7 +248,6 @@ public class NearbyPOIWorker {
             this.longitude = longitude;
         }
     }
-
 
     private static class HttpBaiduPOIsWorker implements Callable<List<BaiduPOI>> {
         private double latitude;
@@ -244,8 +294,7 @@ public class NearbyPOIWorker {
                 DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
                 Document document = documentBuilder.parse(inputStream);
 
-                List<BaiduPOI> poiList = parseXMLDocument(document);
-                return poiList;
+                return parseXMLDocument(document);
             } finally {
                 if (null != gaodeURLConnection) {
                     gaodeURLConnection.disconnect();
