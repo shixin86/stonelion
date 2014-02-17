@@ -137,12 +137,27 @@
         <dependency>
             <groupId>com.xiaomi</groupId>
             <artifactId>xiaomi-common-dal</artifactId>
-            <version>2.1.1-SNAPSHOT</version>
+            <version>2.2.0</version>
         </dependency>
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
             <version>1.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.fusesource.jansi</groupId>
+            <artifactId>jansi-project</artifactId>
+            <version>1.7</version>
+        </dependency>
+        <dependency>
+            <groupId>qesat_ui</groupId>
+            <artifactId>qesat_ui</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.squirrel-sql.thirdparty-non-maven</groupId>
+            <artifactId>com-fifesoft-rsyntaxtextarea</artifactId>
+            <version>1.5.0</version>
         </dependency>
     </dependencies>
     <build>
